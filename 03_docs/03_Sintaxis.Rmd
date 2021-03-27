@@ -1,5 +1,5 @@
 ---
-title: "R Sintaxis"
+title: "**R Sintaxis: Un resumen rápido**"
 author: "Mario Gavidia-Calderón"
 date: "3/27/2021"
 output: beamer_presentation
@@ -161,17 +161,18 @@ aire
 
 
 ## R: Objetos - `data frame`
-Un ejemplor con los Beatles
+Un ejemplo con los Beatles
 ```{r, echo = TRUE}
-beatles <- data.frame(name = c("John", "Paul", "George", "Ringo"),
-                      born = c(1940, 1941, 1943, 1940),
-                      inst = c("guitar", "bass", "guitar", "drums"),
-                      stringsAsFactors = F)
+beatles <- data.frame(
+  name = c("John", "Paul", "George", "Ringo"),
+  born = c(1940, 1941, 1943, 1940),
+  inst = c("guitar", "bass", "guitar", "drums"),
+  stringsAsFactors = F)
 beatles
 
 ```
 
-## : data frame - Seleccionando valores
+## R: data frame - Seleccionando valores
 `beatles[fila, coluna]`
 - `fila`y `coluna`son indices de posición: **enteros**
 ```{r, echo = T}
@@ -180,29 +181,235 @@ beatles
 beatles[1, 1]
 ```
 
-
-
-## R Markdown
-
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
-## Slide with R Output
-
-```{r cars, echo = TRUE}
-summary(cars)
+## R: data frame - Seleccionando valores
+- Seleccionando a Paul, y su año de nacimiendo
+```{r, echo=T}
+beatles[2, c(1, 2)]
 ```
 
-## Slide with Plot
-
-```{r pressure}
-plot(pressure)
+- Seleccionando a los guitarristas
+```{r}
+beatles[c(1, 3), c(1, 2, 3)]
 ```
 
+## R: data frame - Seleccionando valores
+- Espacio en blanco = **"Todo"**
+- *Todo* los nombres
+```{r , echo=T}
+beatles[, 1]
+```
+- **Todos** los datos de Ringo
+```{r}
+beatles[4, ]
+```
+
+## R: data frame - Seleccionando valores
+- Una columna = Un sólo índice
+- *Todos* los instrumentos
+```{r , echo=T}
+beatles[3]
+class(beatles[3])
+```
+
+## R: data frame - **`$`** (signo de dolar)
+- Selecionamos una **columna** de un **`data frame`** como un **`vector`**
+- Sintaxis: `df$nombre_columna`
+- E.g. Nombre de los Beatles
+```{r, echo=T}
+beatles$name
+class(beatles$name)
+```
+- **Ojo!**: `beatles[1]` $\neq$ `beatles$name` 
+
+
+## R: data frame - **`$`** (signo de dolar)
+- Algunas funciones necesitan `vectores`como **input**
+- Média de año de nacimiento
+```{r, echo=T}
+mean(beatles[2])
+mean(beatles$born)
+```
+
+## R: data frame - Creando nuevas columnas
+- Usamos **`$`** así: **`df$nueva_columna <- `**
+- Mejores canciones como solistas (según yo)
+```{r, echo=T}
+beatles$solo <- c("Imagine",
+                  "Band on the run",
+                  "Oh sweet Lord", 
+                  "Photograph")
+beatles
+
+```
+
+## R: data frame - Algunas funciones
+- Número de filas: **`nrow()`**
+- Número de columnas: **`ncol()`**
+```{r, echo=T}
+nrow(beatles)
+ncol(beatles)
+```
+
+## R: data frame - Algunas funciones
+- Tipo de objeto de cada columna: **`str()`**
+```{r, echo=T}
+str(beatles)
+```
+- nombre de columnas
+```{r, echo=T}
+names(beatles)
+```
+
+
+##  R: data frame - Algunas funciones
+- Valores únicos: unique()
+```{r, echo=T}
+# Instrumentos
+unique(beatles$inst)
+# Año nacimiento
+unique(beatles$born)
+
+```
+
+## R: data.frame - Algunas funciones
+- Primeras observaciones: **`head()`**
+- ùltimas observaciones: **`tail()`**
+```{r, echo=T}
+head(beatles)
+tail(beatles)
+```
+
+## R: data.frame - Algunas funciones
+- Primeras observaciones: **`head()`**
+- ùltimas observaciones: **`tail()`**
+```{r, echo=T}
+head(beatles, 2)
+tail(beatles, 2)
+```
+
+## R: data.frame - Substitución
+```{r, echo=T}
+# Otras canciones
+beatles$solo <- c("Working class heroes", 
+                  "Maybe I'm amazed",
+                  "What is life?", 
+                  "I don't come easy")
+beatles
+
+```
+
+## R: Operaciones *Element-wise* 
+- Cuántos años tendrían los Beatles?
+```{r, echo=T}
+2021 - beatles$born
+print(beatles$name)
+```
+
+## R: Operaciones *Element-wise* 
+```{r, echo=T}
+tempC <- c(27, 32, 28, 26)
+tempK <- tempC + 273.15
+tempK
+tempk_chr <- as.character(tempK)
+str(tempk_chr)
+
+```
+
+
+## De Excel a R: **`read.table()`**
+- Usar Excel para exportar la hoja de cálculo como **`.csv`**
+- Evitar caracteres especiales en los nombres de las columnas:
+  - No tildes
+  - No espacios
+  - No paréntesis, etc
+- Usar nombres más sencillos:
+   - **tempC** en vez **Temperatura en (ºC)**
+- Para importar una tabla a R usamos **`read.table()`**
+
+## De Excel a R: Vamos a leer la encuesta
+```{r, echo = T}
+survey <- read.table(
+  "../02_data/respuestas27.csv", # Dónde está el archivo
+  header = T, # Las columnas tienen nombre?
+  sep = ",",  # Cómo están separadas las columnas
+  stringsAsFactors = F # characteres no son factor
+  )
+head(survey[, -c(2, 3)]) # No nombres apellidos
+```
+
+## De Excel a R: Vamos a leer la encuesta
+- Mejores nombres de columnas
+```{r, echo=T}
+names(survey) <- c("date", "name", "last.name",
+                   "age", "district", "molinero",
+                   "faculty", "year", "program",
+                   "prog.lang", "os", "labs",
+                   "Excel", "R", "why")
+names(survey)
+```
+
+## De Excel a R: Vamos a leer la encuesta
+- Cuántos estudian Ing. Ambiental
+```{r, echo=T}
+survey$faculty == "Ingeniería ambiental"
+sum(survey$faculty == "Ingeniería ambiental")
+
+```
+
+## De Excel a R: Vamos a leer la encuesta
+- Cuántos estudian Ing. Ambiental, quienes son?
+```{r, echo=T}
+survey[survey$faculty == "Ingeniería ambiental", ]
+
+```
+
+## De Excel a R: Vamos a leer la encuesta
+- Cuántos son menores que la edad média?
+```{r, echo=T}
+edad_clase <- mean(survey$age)
+genz <- survey[survey$age < edad_clase, ]
+nrow(genz)
+```
+- O también
+```{r, echo=T}
+sum(survey$age < edad_clase)
+
+```
+
+
+## De Excel a R: Vamos a leer la encuesta
+- Qué estudia el más valiente?
+```{r, echo=T}
+names(survey)
+par_fin <- "No hago las prácticas me defiendo en el parcial y final"
+survey[survey$lab == par_fin, 7]
+# Mejor sintaxis
+survey$faculty[survey$lab == par_fin]
+
+```
+
+## De Excel a R: Vamos a leer la encuesta
+- Qué estudia el más jovén?
+```{r, echo=T}
+names(survey)
+survey[survey$age == min(survey$age), 7]
+# Mejor sintaxsis
+survey$faculty[survey$age == min(survey$age)]
+```
+
+## De Excel a R: Vamos a leer la encuesta
+- Cuántos no hicieron la tarea?
+```{r, echo=T}
+num_alumnos_total <- 28
+num_alumnos_enc <- nrow(survey)
+
+num_alumnos_total - num_alumnos_enc
+```
+
+
+## Hora de hacer el Hand-on lab 1!
+
+- **Algoritmo de Feynmann** para la solución de problemas
+  - Escribe el **problema**
+  - **Piensa** muncho
+  - Escribe la **solución**
