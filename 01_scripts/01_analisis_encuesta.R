@@ -2,7 +2,7 @@
 # Análisis de las respuestas de la encuesta
 
 # Leyendo el archivo csv
-respuestas <- read.table("02_data/respuestas.csv", 
+respuestas <- read.table("02_data/respuestas27.csv", 
                          header = T,
                          sep = ",",
                          stringsAsFactors = F)
@@ -16,7 +16,9 @@ names(respuestas) <- c("date", "name", "last.name",
 
 # Calculando algunas médias
 edad_media <- mean(respuestas$age)
-molineros <- prop.table(table(respuestas$molinero))[3] + prop.table(table(respuestas$molinero))[4]  * 100
+molineros <- (prop.table(table(respuestas$molinero))["Sí"] + 
+  prop.table(table(respuestas$molinero))["Sí, y ya me gradué"] ) * 100
+district <- prop.table(table(respuestas$district))
 faculty <- prop.table(table(respuestas$faculty)) * 100
 graduados <-  prop.table(table(respuestas$year))["Ya me gradué"] * 100
 program <- prop.table(table(respuestas$program)) * 100
@@ -57,10 +59,42 @@ RespuestasBarplot <- function(table, title, bar_col, ylim=c(0,100), size = 0.85,
   text(x = bp, y = table_sort + 3.5, labels = table_sort, cex = 1.25) # Adding % to each bar
 }
 
-RespuestasBarplot(faculty, "Qué estudias?", "red")
-RespuestasBarplot(program[c("Sí", "Algo", "Nada")], "Sabes programar?", "red", sorted = F)
-RespuestasBarplot(labs, "Qué usas para hacer tus prácticas?", "forestgreen")
-RespuestasBarplot(excel, "Nivel de Excel?", "forestgreen")
+png("04_figs/01_que_estudias.png", res=300,  units="in", width=7, height=5)
+RespuestasBarplot(faculty, "Qué estudias?", "red",size=0.8)
+dev.off()
+
+png("04_figs/02_sabes_programar.png", res = 300, units="in", width=7, height=5 )
+RespuestasBarplot(program[c("Sí", "Algo", "Nada")], "Sabes programar?", "blue", sorted = F)
+dev.off()
+
+png("04_figs/03_practicas.png", res=300, units="in", width = 7, height = 5)
+fac <- sort(labs, decreasing = T)
+bp <- barplot(fac, col = alpha("orange", 0.7),
+              axes=F, ylim = c(0, 100),
+              border=NA,
+              font.lab=2,
+              cex.names = 0.85,
+              names = c("Excel", "Lenguaje \n Programación", 
+                        "Google Sheet", "Otro Soft", "\n \n   No hago Prácticas \n me defiendo \n Parcial y Final"))
+mtext('Qué usas para hacer tus prácticas?', side = 3, adj = 0,
+      line = 1.2, cex = 1.75, font = 2) #  Adding the main title
+mtext('Frecuencia (%)', side = 3, adj=0, cex = 1.25, font =3) # Add the subtitle
+text(x = bp, y = fac + 3.5, labels = format(fac, digits=0), cex = 1.25) #
+dev.off()
+
+png("04_figs/04_excel.png", res=300, units="in", width = 7, height = 5)
+fac <- sort(excel, decreasing = T)
+bp <- barplot(fac, col = alpha("forestgreen", 0.7),
+              axes=F, ylim = c(0, 100),
+              border=NA,
+              font.lab=2,
+              cex.names = 0.85,
+              names = c("Lo justo", "Como calculadora", "Monstro en computación"))
+mtext('Cuál es tu nivel de Excel?', side = 3, adj = 0,
+      line = 1.2, cex = 1.75, font = 2) #  Adding the main title
+mtext('Frecuencia (%)', side = 3, adj=0, cex = 1.25, font =3) # Add the subtitle
+text(x = bp, y = fac + 3.5, labels = format(fac, digits=0), cex = 1.25) #
+dev.off()
 
 # Hora en que respondieron la encuesta
 date_res <- as.POSIXct(strptime(respuestas$date, format = "%m/%d/%Y %H:%M:%S"),
@@ -76,6 +110,7 @@ hour <- merge(hour_freq, hour_res, all=T)
 hour$hour <- as.numeric(hour$hour)
 hour <- hour[order(hour$hour), ]
 
+png("04_figs/05_hora_de_respuesta.png", res=300, units="in", width = 7, height = 5)
 plot(hour$hour, hour$freq, ylim = c(0, 8), col = "red", pch=19, cex=1.25,
      xlab = "Horas", ylab = "Frecuencia", axes = F,
      main= "Hora del día de respuesta de la encuesta")
@@ -83,3 +118,4 @@ segments(hour$hour,0, hour$hour, hour$freq, col="red")
 axis(2)
 axis(1, at=seq(0,23, 2), labels = seq(0,23, 2))
 box()
+dev.off()

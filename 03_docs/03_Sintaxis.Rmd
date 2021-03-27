@@ -1,0 +1,104 @@
+---
+title: "R Sintaxis"
+author: "Mario Gavidia-Calderón"
+date: "3/27/2021"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R: Sintaxis
+
+- R como calculadora:
+
+```{r  echo = TRUE}
+(5 + 10 * 2 / 4) ^ 2 - 5
+```
+
+- Para **asignar** valor a una variable **`<-`**
+
+```{r echo = TRUE}
+R <- 8.314
+R
+```
+
+## R: Sintaxis
+
+- Para comentar **`#`**
+
+```{r , echo = TRUE}
+R <- 8.314 # Constante general de los gases (J K / mol)
+R
+```
+
+- Una función se ejecuta así: **`nombre_de_la_funciion()`**
+```{r , echo = TRUE}
+class(R)
+```
+
+## R: Objetos
+
+- **`character`**
+```{r, echo=TRUE}
+una_palabra <- "palabra"
+class(una_palabra)
+```
+- **`numeric`**
+```{r, echo=TRUE}
+this_year <- 2021
+g <- 9.81 # m/s2
+class(this_year)
+class(g)
+```
+
+## R: Objetos - Vectores
+- un vector se define usando **`c()`**
+```{r, echo=TRUE}
+puntos_cardinales <- c("N", "E", "S", "W")
+puntos_cardinales
+puntos_cardinales_grados <- c(0, 90, 180, 270)
+class(puntos_cardinales_grados)
+
+```
+
+## R: Objetos - Vectores
+- Una secuencia usando **`seq(inicio, final, intervalo)`**
+```{r, echo=T}
+del_1al5 <- seq(1, 5)
+del_1al5
+pares_hasta10 <- seq(0, 10, 2)
+pares_hasta10
+sec_float <- seq(0, 1, 0.2)
+sec_float
+
+```
+
+## R:Objetos - Vectores - Selección de elementos
+
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
