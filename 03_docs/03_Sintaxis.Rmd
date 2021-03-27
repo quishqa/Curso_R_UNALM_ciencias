@@ -53,6 +53,21 @@ class(this_year)
 class(g)
 ```
 
+## R: Objetos 
+
+- `booleans`
+```{r , echo = T}
+verdad <- TRUE
+verdad
+falso <- 5 > 10
+falso
+falsazo <- "cinco" == "5"
+falsazo
+
+
+```
+
+
 ## R: Objetos - Vectores
 - un vector se define usando **`c()`**
 ```{r, echo=TRUE}
@@ -76,6 +91,95 @@ sec_float
 ```
 
 ## R:Objetos - Vectores - Selección de elementos
+- Para seleccionar elementos de un vector: **`nombre_vector[posición]`**:
+```{r, echo=T}
+# Primer elemento
+puntos_cardinales_grados[1]
+# Último elemento
+puntos_cardinales_grados[4]
+
+```
+
+
+## R:Objetos - Vectores - Selección de elementos
+
+- Pueden ser varios elementos usando **`otro vector`**
+```{r , echo=T}
+# Segundo y tercero
+puntos_cardinales[c(2, 3)]
+
+```
+- Se puede eliminar elemntos usando **`nombre_vector[-posición]`**
+```{r, echo=T}
+GEE <- c("H2O", "CO2", "O2", "CH4")
+GEE
+# Oxígeno no es GEE
+GEE[-3]
+```
+
+## R:Objetos - Vectores - Substitución
+
+- Podemos substituir un elemento de un vector así:
+```{r, echo=T}
+# Reemplazamos Oxígeno por Ozone
+GEE[3] <- "O3"
+GEE
+
+```
+
+## R: Objetos - `data frames`
+- Un `data frame` es una **tabla**
+- Una matriz **indexada**: nombres de columnas y filas
+- Cada **columna** sería una **variable**
+- Cada **fila** es una **observación**
+- Un conjunto de vectores
+
+## R: Objetos - `data frame`
+- Creamos un **`data frame`** con la función **`data.frame()`**
+```{r , echo=TRUE}
+gases <- c("N2", "O2", "Ar", "CO2")
+peso_molecular <- c(28, 32, 40, 12 + 2 * 16)
+porcentaje <- c(78.08, 20.95, 0.9, 0.04)
+
+aire <- data.frame(gas = gases,
+                   W = peso_molecular,
+                   per = porcentaje)
+aire
+
+```
+
+## R: Objetos - `data frame`
+- Creamos un **`data frame`** con la función **`data.frame()`**
+```{r , echo=TRUE}
+# O directamente
+aire <- data.frame(gas = c("N2", "O2", "Ar", "CO2"),
+                   W = c(28, 32, 40, 12 + 2 * 16),
+                   per = c(78.08, 20.95, 0.9, 0.04))
+aire
+
+```
+
+
+## R: Objetos - `data frame`
+Un ejemplor con los Beatles
+```{r, echo = TRUE}
+beatles <- data.frame(name = c("John", "Paul", "George", "Ringo"),
+                      born = c(1940, 1941, 1943, 1940),
+                      inst = c("guitar", "bass", "guitar", "drums"),
+                      stringsAsFactors = F)
+beatles
+
+```
+
+## : data frame - Seleccionando valores
+`beatles[fila, coluna]`
+- `fila`y `coluna`son indices de posición: **enteros**
+```{r, echo = T}
+beatles
+
+beatles[1, 1]
+```
+
 
 
 ## R Markdown
