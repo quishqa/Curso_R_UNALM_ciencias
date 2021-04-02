@@ -334,3 +334,76 @@ library(openair) # No es neceario las " "
 
 - Buena práctica: Colocarlas al inicio de cada script
 
+# Otro si digo
+
+## Otros objetos
+- Existen otros tipos de objetos:
+   - listas: `list()`
+   - matrizes: `matrix()`
+   - factores: `as.factor()`
+   - **fechas: `as.POSIXct()`**
+   
+## as.POSIXct
+- Le dice a R que estos son datos de fechas
+- Importante en análisis de series temporales
+```{r, echo=T}
+mar19 <- read.table(
+  "../02_data/pm25_0319.csv",
+  header = T,
+  sep = ",",
+  dec = "."
+)
+
+head(mar19)
+```
+
+## as.POSIXct
+```{r, echo=T}
+mar19$date <- as.POSIXct(
+  strptime(
+    mar19$Date..LT., format = "%Y-%m-%d %I:%M %p"
+  ),
+  tz = "America/Lima"
+)
+
+head(mar19)
+```
+
+## as.POSIXct
+```{r, echo=T, eval=F}
+plot(mar19$Raw.Conc., t = "l", 
+     main = "PM25 concentration at USA embassy", 
+     ylab = "PM25 (ug/m3",
+     xlab = "March 2019")
+
+```
+
+
+## as.POSIXct
+```{r}
+plot(mar19$Raw.Conc., t = "l", 
+     main = "PM25 concentration at USA embassy", 
+     ylab = "PM25 (ug/m3",
+     xlab = "March 2019")
+
+```
+
+## as.POSIXct
+```{r, echo=T, eval=F}
+plot(mar19$date, mar19$Raw.Conc., t = "l", col = "red",
+     main = "PM25 concentration at USA embassy", 
+     ylab = "PM25 (ug/m3",
+     xlab = "March 2019")
+
+```
+
+## as.POSIXct
+```{r}
+plot(mar19$date, mar19$Raw.Conc., t = "l", col = "red", 
+     main = "PM25 concentration at USA embassy", 
+     ylab = "PM25 (ug/m3",
+     xlab = "March 2019")
+
+```
+
+
