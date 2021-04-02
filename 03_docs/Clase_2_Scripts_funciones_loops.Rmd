@@ -1,0 +1,69 @@
+---
+title: "Un curso introductorio de R"
+subtitle: "Scripts, funciones y loops"
+author: "Mario Gavidia-Calderón"
+date: "3/31/2021"
+output: 
+  beamer_presentation:
+    theme: "Dresden"
+    fonttheme: "structurebold"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+## El Menú de hoy
+
+- Scripts
+- Funciones
+- Loops
+- `packages`
+
+## Qué es un script?
+
+- Una **receta**: _Script para analisar resultados de encuesta_.
+- Consola de R para **experimentar**: _Qué hace está función?_
+- Editor de texto:
+  - **Espacio** para trabajar
+  - Código que **funciona** y nos **importa**[^*]
+
+[^*]: Wickham & Grolemund, 2016
+
+## 
+```{r, out.width="105%"}
+knitr::include_graphics("pres_figs/console_r.png")
+```
+
+## 
+```{r, out.width="105%"}
+knitr::include_graphics("pres_figs/my_script.png")
+```
+
+## Scripts
+
+- Un proceso ordenado
+- Suceptible a mejoras
+- Más fácil de compartir
+
+## Funciones
+
+```{r, echo=TRUE, eval=F}
+functionName <- function(arg1, arg2, ...){
+  statements1
+  statements2
+  ...
+  return(object)
+}
+```
+
+
+## 
+```{r, out.width="105%"}
+knitr::include_graphics("pres_figs/fucntion.png")
+```
+
+## 
+```{r, out.width="105%"}
+knitr::include_graphics("pres_figs/function_output.png")
+```
+
