@@ -334,7 +334,7 @@ library(openair) # No es neceario las " "
 
 - Buena práctica: Colocarlas al inicio de cada script
 
-# Otro si digo
+# Otrosí digo
 
 ## Otros objetos
 - Existen otros tipos de objetos:
@@ -358,6 +358,7 @@ head(mar19)
 ```
 
 ## as.POSIXct
+- Creamos una columna `date` como `as.POSIXct`
 ```{r, echo=T}
 mar19$date <- as.POSIXct(
   strptime(
@@ -366,7 +367,7 @@ mar19$date <- as.POSIXct(
   tz = "America/Lima"
 )
 
-head(mar19)
+class(mar19$date)
 ```
 
 ## as.POSIXct
@@ -406,4 +407,51 @@ plot(mar19$date, mar19$Raw.Conc., t = "l", col = "red",
 
 ```
 
+## Otras funciones importantes: `paste()`
+
+- `?paste`
+  - Concatena vectores luego de convertirlos a `character`
+```{r, echo=T}
+my_name <- "Mario"
+my_last_name <- "Gavidia-Calderón"
+paste(my_name, my_last_name)
+
+```
+
+## Otras funciones importantes: `paste()`
+```{r, echo=T}
+temp <- c(32, 30, 29, 32) + 273.15
+paste(temp, "K")
+```
+
+
+## Otras funciones importantes: `as.something()`
+- Donde `something` puede ser: `character`, `numeric`, `data.frame`, etc
+```{r, echo=T}
+a_character <- "5"
+a_character
+class(a_character)
+a_number <- as.numeric(a_character)
+a_number
+class(a_number)
+
+```
+
+
+## Otras funciones importantes: `write.table()`
+```{r, echo=T}
+aire <- data.frame(gas = c("N2", "O2", "Ar", "CO2"),
+                   w   = c(28, 32, 40, 12 + 2 * 16),
+                   per = c(78.08, 20.95, 0.9, 0.04))
+aire
+```
+
+## Otras funciones importantes: `write.table()`
+- Exporta en un archivo de texto.
+```{r, echo=T, eval=F}
+aire <- data.frame(gas = c("N2", "O2", "Ar", "CO2"),
+                   w   = c(28, 32, 40, 12 + 2 * 16),
+                   per = c(78.08, 20.95, 0.9, 0.04))
+write.table(aire, "./aire_composition.csv", sep = ",", row.names = F, quotes = F)
+```
 

@@ -210,29 +210,84 @@ tempK_chr <- as.character(tempK)
 
 to_K <- c(273.15, 273.15, 273.15, 273.15)
 tempC + to_K
+# Ctrl + Shift + c = Comentar/Descomentar linea
 
-# Leer archivo de texto como data frame TADA!!!!
-# read.table(path, header= T, sep =",", stringsAsFactor=F)
 
-survey <- read.table("02_data/respuestas27.csv", # la dirección del archivo
-                     header = T,  # Tienen nombre las columnas? Sí = T, No = F
-                     sep = ",") # Cómo están separadas las columnas
-names(survey) <- c("date", "name", "last_name", "age",
-                   "where", "unalm", "study", "year",
-                   "program", "lang", "os", "lab", 
-                   "excel", "R", "why")
+# Vamos a leer los datos de la encuesta
+# read.table
+# Si no sabes la dirección usar file.choose()
 
-# vamos a hacer unas estadisticas
-edad_media <- mean(survey$age)
-survey$study == "Ingeniería ambiental"
+# Opción de emergencia
+survey <- read.table(file.choose(), 
+                     header = TRUE, # Tiene nombre las columnas?
+                     sep = ",") # Cómo están separadas las columnas?
+# Otra opción
+survey <- read.table("02_data/respuestas27.csv",
+                     header = T,
+                     sep = ",")
 
-# Quiénes son colegas?
-sum(survey$study == "Ingeniería ambiental")
+# vamos a ver el nombre de las columnas del data.frame names()
+names(survey) <- c("date", "name", "last_name", "age", 
+                   "district", "unalm", "facu", "year", 
+                   "program", "prog_lang", "os", "lab",
+                   "excel", "r", "why")
+# Cuántas personas son colegas
 
-hist(survey$age)
+# ESTUDIAR FILTRADO CON AHÌNCO!
 
-# Aprender R es una historia de ENSAYOy 
-# ERROR (+ HORROR)
+survey$facu == "Ingeniería ambiental"
+sum(survey$facu == "Ingeniería ambiental")
+
+# Quiénes son?
+survey[survey$facu == "Ingeniería ambiental", ]
+
+# Quiénes son?
+survey[survey$facu == "Ingeniería ambiental", c("name", "last_name")]
+
+# Sí SOLO queremos los nombres
+survey$name[survey$facu == "Ingeniería ambiental"]
+
+# La edad media de los alumnos
+mean(survey$age)
+
+# La edad mínima de los alumnos
+min(survey$age)
+
+# Quién el el alumno más joven
+survey$name[survey$age == min(survey$age)] # Quiero saber el nombre del alumno que tiene la edad mínima de la muestra
+
+# Cuántos alumnos son menore de la edad media
+sum(survey$age < mean(survey$age))
+
+# Otro data frame con la genz
+genz <- survey[survey$age < mean(survey$age), ]
+
+# Quién es el más temerario
+survey$name[survey$lab == "No hago las prácticas me defiendo en el parcial y final"]
+
+# y qué estudia
+survey[survey$lab == "No hago las prácticas me defiendo en el parcial y final", c("name", "facu")]
+
+# Sintáxis seleción
+# df[condición, filas selecionar]
+
+a_vector <- seq(1, 15)
+filtrado <- a_vector %% 2 == 0
+a_vector[filtrado]
+a_vector[a_vector %% 2 == 0]
+
+# Cuántos nohicieron la tarea
+numero_matriculados <- 35
+numero_alumnos_tares <- nrow(survey)
+
+no_tarea <- numero_matriculados - numero_alumnos_tares
+
+11 * 100 / 35
+
+
+
+
+
 
 
   

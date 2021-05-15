@@ -1,0 +1,243 @@
+---
+title: "Un curso introductorio de R"
+subtitle: "`openair`, series temporales y buenos plots"
+author: "Mario Gavidia-Calderón"
+date: "4/9/2021"
+output: 
+  beamer_presentation:
+    theme: "Dresden"
+    fonttheme: "structurebold"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## El menú de hoy
+- as.POSIXct()
+- Completando datos faltantes de fecha
+- `openair`
+- Plots (buenos plots)
+
+## `as.POSIXct()`
+- Un dato `POSIXct` representa **tiempos** y **fechas de calendarios**.
+- Importante decirle a R que tenemos datos de fechas de calendarios:
+   - Permite nuevas funcionalidades
+   - Integración con otros paquetes/librerias
+   
+## `as.POSIXct()`
+- Para decirle a R que tenemos datos de fecha usamos `as.POSIXct` junto con `strptime()`
+- `strptime()`: de character para `POSIXct`
+
+## `as.POSIXct()`: Datos marzo de 2019
+```{r, echo=TRUE}
+mar19 <- read.table("../02_data/pm25_0319.csv", 
+                    header = T, sep = ",",
+                    dec = ".")
+# Datos válidos
+mar19 <- subset(mar19, subset = QC.Name == "Valid") 
+```
+
+## `as.POSIXct()`: Datos marzo de 2019
+```{r, echo=TRUE}
+# Dos primeros fechas
+head(mar19$Date..LT)[1:2]
+class(mar19$Date..LT)
+```
+- El formato es: AÑO(4 dig)-mes(2 dig)-dia Hora:Min AM/PM
+- En código: `%Y-%m-%d %I:%M %p`
+- `%I` y `%p` cuando tenemos el AM/PM
+
+## `as.POSIXct()`: Datos marzo de 2019
+- Transformando para POSIXct
+```{r, echo=T}
+# Criamos uma nova columna
+mar19$date <- as.POSIXct(
+  strptime(
+    mar19$Date..LT., format = "%Y-%m-%d %I:%M %p"
+  ),
+  tz = "America/Lima"
+)
+class(mar19$date)
+```
+
+## `as.POSIXct()`: Datos marzo de 2019
+- Veamos los primeros valores
+```{r, echo=T}
+mar19$Date..LT.[1:2]
+mar19$date[1:2]
+
+```
+
+## Datos faltantes
+- Veamos nuestros datos faltantes
+```{r, echo=T}
+horas_marzo <- 31 * 24
+horas_faltantes <- horas_marzo - nrow(mar19)
+horas_faltantes
+```
+
+## Datos Faltantes
+- Vamos a completar las horas faltantes con `NA`
+- La estrategia:
+  - Crear un data frame con la fecha completa
+  - Combinarla con nuestro data frame original (`mar19`)
+  
+## Datos falantantes
+- Data frame con fechas completas
+```{r, echo=T}
+todas_horas <- data.frame(
+  date = seq(
+    as.POSIXct("2019-03-01 00:00", tz = "America/Lima"),
+    as.POSIXct("2019-03-31 23:00", tz = "America/Lima"),
+    by = "hour")
+)
+head(todas_horas, 5)
+```
+
+## Datos faltantes
+```{r, echo=T}
+nrow(mar19)
+mar19_all <- merge(todas_horas, mar19, all = T)
+nrow(mar19_all)
+```
+
+## Datos faltantes
+- Cuales fueron mis datos faltantes
+```{r, echo=T}
+mar19_na <- subset(mar19_all, subset = is.na(mar19_all$Raw.Conc.))
+head(mar19_na, 3)
+```
+## Datos faltantes
+- Ahora que mis data set está "completo" lo puedo guardar y exportar
+```{r, echo=T}
+# Sólo neceito date y pm25
+pm25 <- mar19_all[c("date", "Raw.Conc.")]
+names(pm25) <- c("date", "pm25")
+write.table(pm25, "pm25_mar19_all.csv", sep = ",",
+            row.names = F, quote = F)
+```
+
+## `openair`
+- `openair` es una librería para el análisis de datos de contaminación atmosférica
+- Requiere de una columna con datos de fecha llamada `date`
+- Para instalar:
+  - `install.package("openair")
+- Para usarla:
+  - `library(openair)`
+- Vamos a ver algunas de sus funcionalidades
+
+## `openair` : `summaryplot`
+```{r, echo=T, message=F, warning=F, fig.height=2.5, fig.width=4}
+library(openair)
+summaryPlot(pm25, period = "months")
+```
+
+## `openair`: `timePlot`
+```{r, echo=T, message=F, warning=F, fig.height=3, fig.width=5}
+library(openair)
+openair::timePlot(pm25, pollutant = "pm25")
+```
+
+## `openair`: `timePlot`
+```{r, echo=T, message=F, warning=F, fig.height=3, fig.width=5}
+library(openair)
+timePlot(pm25, pollutant = "pm25", avg.time = "hour")
+```
+
+## `openair`: `selectByDate`
+```{r, echo=T, message=F, warning=F, fig.height=2.5, fig.width=4.5}
+a_week <- selectByDate(pm25, 
+                       start="18/03/2019", end="24/03/2019")
+timePlot(a_week, pollutant = "pm25")
+```
+
+
+## `openair`: `timeAverage`
+```{r, echo=T}
+hour_prof <- timeAverage(pm25, avg.time = "hour")
+head(hour_prof)
+```
+
+## `openair`: `calendarPlot`
+```{r, echo=T, message=F, warning=F, fig.height=2.5, fig.width=2.5, fig.align="center"}
+calendarPlot(pm25, pollutant = "pm25")
+```
+
+## `openair`: `timeVariation`
+```{r, echo=T}
+timeVariation(pm25, pollutant = "pm25")
+```
+
+## Plots: Cómo hacer buenas figuras?
+1. Conoce a tu audiencia.
+2. Identifica el mensaje.
+3. Adapta la figura al medio de soporte.
+4. Las etiquetas no son opcionales.
+5. No confíes en la configuración por defecto.
+^[[Rougier et al. 2014](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003833)]
+
+## Plots: Cómo hacer buenas figuras?
+6. Usa los colores efectivamente.
+7. No confundas al lector.
+8. [Evita el _chartjunk_ (Menos es más)](https://speakerdeck.com/cherdarchuk/remove-to-improve-the-data-ink-ratio)
+9. [Mesaje > belleza](https://procomm.ieee.org/flatten-the-curve-why-certain-messages-catch-on/)
+10. Usa la herramienta correcta.
+^[[Rougier et al. 2014](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003833)]
+
+## Plots: **`plot()`**
+```{r, echo=T, fig.height=3, fig.width=5, fig.align="center" }
+# Sintáxis plot(x , y)
+plot(pm25$date, pm25$pm25)
+```
+
+## Plots: **`plot()`**
+```{r, echo=T, fig.height=3, fig.width=5, fig.align="center" }
+# No confiar en default, Etiquetas obligatorias
+plot(pm25$date, pm25$pm25, t = "l", 
+     ylab = "PM2.5 (ug/m3)", xlab = "2019")
+```
+
+## Plots: **`plot()`**
+```{r, echo=T, fig.height=5, fig.width=7, out.width="65%", fig.align="center"}
+# No confiar en default, Etiquetas obligatorias
+plot(pm25$date, pm25$pm25, t = "l", col = "red",
+     ylab = "PM2.5 (ug/m3)", xlab = "2019",
+     main = "Embajada EEUU Perú")
+```
+
+## Plots: **`plot()`**
+```{r, echo=T, fig.height=5, fig.width=7, out.width="65%", fig.align="center"}
+# No confiar en default, Etiquetas obligatorias
+plot(pm25$date, pm25$pm25, t = "l", col = "red",
+     ylab = "PM2.5 (ug/m3)", xlab = "2019",
+     main = "Embajada EEUU Perú")
+```
+
+## Plots: **`plot()`**
+```{r, echo=T, fig.height=5, fig.width=7, out.width="65%", fig.align="center"}
+# No confiar en default, Etiquetas obligatorias
+plot(pm25$date, pm25$pm25, t = "l", col = "red",
+     ylab = "PM2.5 (ug/m3)", xlab = "2019",
+     main = "Embajada EEUU Perú")
+abline(h = 25, col = "grey", lty = "longdash")
+```
+
+## Vamos a trabajar con un proyecto.
+
+## Palabras finales
+1. El mejor comando de R es **`?`**
+2. Si no funciona usen Google:
+   - En inglés es mejor
+   - En StackOverflow está la gente más brava
+3. El camino está lleno de errores pero así se aprende
+
+## Palabras finales
+- Con esta pequeña introducción espero que:
+   - Puedas usar R para tus laboratorios
+   - Para tu tesis
+   - Para automatizar procesor
+   - **Estar más preparado para los cursos on-line**.
+      - [Datacamp](https://www.datacamp.com/courses/free-introduction-to-r)
+      - [Dataquest](https://www.dataquest.io/path/data-analyst-r/)
+   

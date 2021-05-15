@@ -29,3 +29,11 @@ knitr::opts_chunk$set(echo = FALSE)
 - Para español:
   - **ISO 8859-1**
   - UTF-8
+  
+## Sentinel 5-P
+- Se puede usar R para leer imágenes de Sentinel 5P?
+- Sí, pero no es tan simple:
+```{r, out.width="110%", fig.align="center"}
+knitr::include_graphics("pres_figs/sentinel.png")
+```
+
